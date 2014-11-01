@@ -18,25 +18,63 @@ function prepareOutputCitilink (data) {
 }
 function mergeCitilink (res, cb) {
 	var $ = cheerio.load(_json);
-	console.log($('body').text());
-	var depFlights = _json.departure.flights;
-	var retFlights = _json.return && json.return.flights;
+	var depFlights = $('#availabilityTable0 > tr');
+	var retFlights = $('#availabilityTable1 > tr');
 	function looper (depFlights, save) {
-		var out = depFlights.map(function (depFlight) {
-			return depFlight.map(function (flight) {
-				return flight.seats.map(function (seat) {
-					seat.price = _res[seat.class];
-					if(save && seat.available && (!lowestPrice || seat.price < lowestPrice))
-						lowestPrice = seat.price;
-					return seat
-				});
-			});
+		depFlights.each(function (i, _tr) {
+			var tr = $(_tr);
+			var trclass = tr.attr('class');
+			// console.log(trClass);
+			if(i !== 0 && (trclass === undefined || trclass == 'altRowItem')) {
+				var fareData = tr.find('td').eq(4).html();
+				try {
+					var fareMatch = fareData.match(/\d+(Fare)\w+/g);
+					var fare = fareMatch[0];
+				} catch (e) {
+					var err = new Error('No flight fare found!');
+					throw err;
+				}
+				var fareData2 = '';
+				fareMatch.forEach(function (v, i) {
+					var input = $('[id$='+v+']');
+					var tr = input.parents('tr');
+					var p = input.parents('p');
+					var flightCache = tr.find('td:nth-child(3)').html().substr(0,2);
+					var classCache = input[0].attribs.value.match(/(~[A-Z]~~)+/g)[0].replace(/~/g, '');
+					var availableStr = p.text().trim();
+					var available = availableStr[availableStr.length - 3];
+					flightCache = flightCache.toLowerCase();
+					classCache = classCache.toLowerCase();
+					var cache_total_price = res[flightCache][classCache] || 0;
+					cache_total_price = Math.round(cache_total_price / 100) * 100;
+					// console.log(save, available, lowestPrice, cache_total_price)
+					if(!!save && !!available && (!lowestPrice || (cache_total_price && cache_total_price < lowestPrice)))
+						lowestPrice = cache_total_price;
+					var fareTr = tr.find('td').eq(4).find('p').eq(i);
+					var before = fareTr.html();
+					try {
+						if (before.match(/(Rp.)(\d+,\d+,\d+)/g)) {
+						  after = before.replace(/(Rp.)(\d+,\d+,\d+)/g, 'Rp.'+cache_total_price);
+						} else if (before.match(/(Rp.)(\d+,\d+)/g)) {
+						  after = before.replace(/(Rp.)(\d+,\d+)/g, 'Rp.'+cache_total_price);
+						}
+						fareData2 = fareData2 + '<p>'+after+'</p>';
+					} catch (e) {
+					// do nothing
+					}
+				  //after = before;
+				  //fareTr.html(after);
+			  	});
+			  	tr.find('td').eq(4).html(fareData2);
+			  	// console.log(fareData2)
+			}
 		});
-		return out;
+		// return out;
 	};
-	_json.departure.flights = looper(depFlights, 1);
+	looper(depFlights, 1);
 	if(retFlights)
-		_json.departure.return = looper(retFlights)
-	cb(_json);
+		looper(retFlights)
+	console.log(lowestPrice);
+	cb($('body').html());
 };
 module.exports = citilink;
