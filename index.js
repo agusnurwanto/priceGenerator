@@ -58,7 +58,7 @@ function insertLowestPrice (price) {
 		price: _price,
 		airline: _airline
 	};
-	data.id = data.origin + data.destination + data._date / 1000;
+	data.id = data.origin + data.destination + data.date / 1000;
 	console.log('lowest',lowestPrice, JSON.stringify(data, null, 2));
 	db.index('pluto', 'calendar', data, function (err, res) {
 		console.log('insert', res)
