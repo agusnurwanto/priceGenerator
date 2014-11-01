@@ -40,7 +40,6 @@ function mergePrice(res, cb) {
 	return function () {
 		this.lowestPrice = 0;
 		merge[_airline](_res, function (res) {
-			// console.log(lowestPrice);
 			if (lowestPrice)
 				insertLowestPrice(lowestPrice);
 			_cb(res);
@@ -56,6 +55,7 @@ function insertLowestPrice (price) {
 		price: price,
 		airline: _airline
 	};
+	console.log('lowest',lowestPrice, JSON.stringify(data, null, 2));
 	db.index('pluto', 'calendar', data, function (res) {
 		console.log('insert', res)
 	})	
