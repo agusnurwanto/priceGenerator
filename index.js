@@ -5,12 +5,15 @@ var db = new ElasticSearchClient({
     host: 'folbek.me',
     port: 9200
 });
-var garuda = require('./garuda')
+var garuda = require('./garuda');
+var citilink = require('./citilink');
 var merge = {
-	garuda: garuda.mergeGaruda
+	garuda: garuda.mergeGaruda,
+	citilink: citilink.mergeCitilink,
 }
 var prepareOutput = {
-	garuda: garuda.prepareOutputGaruda
+	garuda: garuda.prepareOutputGaruda,
+	citilink: citilink.prepareOutputCitilink,
 }
 function priceGenerator (airline) {
 	_airline = airline;

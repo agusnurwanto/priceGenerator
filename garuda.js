@@ -19,7 +19,7 @@ function mergeGaruda (res, cb) {
 	var _res = {};
 	for( var prop in res) {
 		for (var _prop in res[prop]) {
-			_res[_prop] = Math.round(res[prop][_prop]/100) * 100;
+			_res[_prop.toUpperCase()] = Math.round(res[prop][_prop]/100) * 100;
 		}
 	}
 	var depFlights = _json.departure.flights;

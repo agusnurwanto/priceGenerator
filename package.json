@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/raabbajam/priceGenerator",
   "dependencies": {
+    "cheerio": "^0.17.0",
     "elasticsearchclient": "^0.5.3",
     "moment": "^2.8.3"
   },
