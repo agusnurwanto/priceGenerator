@@ -1,0 +1,26 @@
+{
+  "name": "priceGenerator",
+  "version": "1.0.0",
+  "description": "priceGenerator ==============",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raabbajam/priceGenerator.git"
+  },
+  "author": "Muhammad Abdul Jabbaar <muhammadabduljabbaar@gmail.com> (http://mabdulj.jasaprogrammer.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raabbajam/priceGenerator/issues"
+  },
+  "homepage": "https://github.com/raabbajam/priceGenerator",
+  "dependencies": {
+    "elasticsearchclient": "^0.5.3",
+    "moment": "^2.8.3"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2"
+  }
+}
