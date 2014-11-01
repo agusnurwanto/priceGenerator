@@ -1,6 +1,7 @@
 var ElasticSearchClient = require('elasticsearchclient');
 var moment = require('moment');
 var dateFormats = ['DD+MM+YYYY','DD+MMM+YYYY','DD MM YYYY','DD MMM YYYY'];
+var airlines = {"airasia": 1, "citilink": 2, "garuda": 3, "lion": 4, "sriwijaya": 5, "xpress": 6};
 var db = new ElasticSearchClient({
     host: 'folbek.me',
     port: 9200
@@ -16,6 +17,7 @@ var prepareOutput = {
 	citilink: citilink.prepareOutputCitilink,
 }
 function priceGenerator (airline) {
+	_kode = airlines[airline] || 0;
 	_airline = airline;
 	return function (dt, json, cb) {
 		this._dt = dt;
@@ -47,16 +49,18 @@ function mergePrice(res, cb) {
 	}
 }
 function insertLowestPrice (price) {
+	var _price = parseInt(price, 10) + _kode;
 	var _date = moment(_dt.dep_date, dateFormats).unix() * 1000;
 	var data = {
 		date: _date,
 		origin: _dt.ori,
-		destination: _dt.destination,
-		price: price,
+		destination: _dt.dst,
+		price: _price,
 		airline: _airline
 	};
+	data.id = data.origin + data.destination + data._date / 1000;
 	console.log('lowest',lowestPrice, JSON.stringify(data, null, 2));
-	db.index('pluto', 'calendar', data, function (res) {
+	db.index('pluto', 'calendar', data, function (err, res) {
 		console.log('insert', res)
 	})	
 }
