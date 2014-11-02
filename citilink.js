@@ -45,11 +45,11 @@ function mergeCitilink (res, cb) {
 					var available = availableStr[availableStr.length - 3];
 					flightCache = flightCache.toLowerCase();
 					classCache = classCache.toLowerCase();
-					var cache_total_price = res[flightCache][classCache] || 0;
-					cache_total_price = Math.round(cache_total_price / 100) * 100;
+					var cache_total_price = (res[flightCache] && res[flightCache][classCache]) || 0;
 					// console.log(save, available, lowestPrice, cache_total_price)
 					if(!!save && !!available && (!lowestPrice || (cache_total_price && cache_total_price < lowestPrice)))
 						lowestPrice = cache_total_price;
+					cache_total_price = Math.round(cache_total_price / 100) * 100;
 					var fareTr = tr.find('td').eq(4).find('p').eq(i);
 					var before = fareTr.html();
 					try {
