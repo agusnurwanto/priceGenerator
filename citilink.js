@@ -74,7 +74,7 @@ function mergeCitilink (res, cb) {
 	looper(depFlights, 1);
 	if(retFlights)
 		looper(retFlights)
-	console.log(lowestPrice);
+	// console.log(lowestPrice);
 	cb($('body').html());
 };
 module.exports = citilink;

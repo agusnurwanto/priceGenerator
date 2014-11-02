@@ -9,15 +9,19 @@ var db = new ElasticSearchClient({
 var garuda = require('./garuda');
 var lion = require('./lion');
 var citilink = require('./citilink');
+var express = require('./express');
 var merge = {
 	garuda: garuda.mergeGaruda,
 	citilink: citilink.mergeCitilink,
 	lion: lion.mergeLion,
+	xpress: express.mergeExpress,
+
 }
 var prepareOutput = {
 	garuda: garuda.prepareOutputGaruda,
 	citilink: citilink.prepareOutputCitilink,
 	lion: lion.prepareOutputLion,
+	xpress: express.prepareOutputExpress,
 }
 var _next, _added;
 function priceGenerator (airline) {
@@ -34,12 +38,14 @@ function priceGenerator (airline) {
 	};
 };
 function getCache (cb) {
+	if ( ['xpress', 'airaasia'].indexOf(_airline) > -1 )
+		return cb();
 	var ori = _dt.ori.toUpperCase();
 	var dst = _dt.dst.toUpperCase();
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
 	// console.log(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
-		console.log('res',res, _dt.ori, _dt.dst);
+		// console.log('res',res, _dt.ori, _dt.dst);
 		cb(prepareOutput[_airline](JSON.parse(res)).data);
 	});
 };

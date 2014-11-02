@@ -82,8 +82,8 @@ function mergeLion (res, cb) {
         }
       });
  	}
- 	console.log(_next);
- 	console.log(_added);
+ 	// console.log(_next);
+ 	// console.log(_added);
  	// if (fn = _next.pop())
  	// 	return fn(cb)
 	cb('<body>' + $('body').html() + '</body>');
