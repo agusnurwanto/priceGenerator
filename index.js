@@ -56,7 +56,7 @@ function getCache (cb) {
 	// 	var dst = _dt.dst.toUpperCase();
 	// }
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
-	debug(JSON.stringify(query, null, 2));
+	// debug(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
 		// debug('res',res, _dt.ori, _dt.dst);
 		if (err)
@@ -77,7 +77,7 @@ function mergePrice(res, cb) {
 			_added = _this._added || [];
 
 			// debug(res);
-			debug('lowestPrice',lowestPrice);
+			// debug('lowestPrice',lowestPrice);
 			var fn;
 			if (lowestPrice)
 				insertLowestPrice(lowestPrice);
@@ -106,10 +106,10 @@ function insertLowestPrice (price) {
 	data.id = data.origin + data.destination + data.date / 1000;
 	// debug('lowest',lowestPrice, JSON.stringify(data, null, 2));
 	db.get('pluto', 'calendar', data.id, function (err, res) {
-		debug(res)
+		// debug(res)
 		var res = JSON.parse(res);
 		var oldPrice = (res._source && res._source.price) || 0;
-		debug(oldPrice, _price)
+		// debug(oldPrice, _price)
 		if ( oldPrice === _price || (oldPrice !== 0 && _price >= oldPrice && res._source.airline !== _airline))
 			return false;
 		data.price = _price;
