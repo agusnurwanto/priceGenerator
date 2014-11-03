@@ -39,7 +39,7 @@ function priceGenerator (airline) {
 		this._realDt = dt;
 		this._json = json;
 		getCache(function (res) {
-			// console.log(res);
+			// debug(res);
 			mergePrice(res, cb)();
 		});
 	};
@@ -50,9 +50,9 @@ function getCache (cb) {
 	var ori = _dt.ori.toUpperCase();
 	var dst = _dt.dst.toUpperCase();
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
-	console.log(JSON.stringify(query, null, 2));
+	debug(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
-		// console.log('res',res, _dt.ori, _dt.dst);
+		// debug('res',res, _dt.ori, _dt.dst);
 		cb(prepareOutput[_airline](JSON.parse(res)).data);
 	});
 };
@@ -68,18 +68,18 @@ function mergePrice(res, cb) {
 			_next = _this._next || [];
 			_added = _this._added || [];
 
-			// console.log(res);
-			// console.log(lowestPrice);
+			// debug(res);
+			debug('lowestPrice',lowestPrice);
 			var fn;
 			if (lowestPrice)
 				insertLowestPrice(lowestPrice);
 		 	if (fn = _next.pop()){
-		 		// console.log('next');
+		 		// debug('next');
 		 		_json = res;
 		 		fn(_cb)
 		 	}
 		 	else{
-		 		// console.log(res);
+		 		// debug(res);
 				_cb(res);
 		 	}
 		});
@@ -96,9 +96,9 @@ function insertLowestPrice (price) {
 		airline: _airline
 	};
 	data.id = data.origin + data.destination + data.date / 1000;
-	// console.log('lowest',lowestPrice, JSON.stringify(data, null, 2));
+	// debug('lowest',lowestPrice, JSON.stringify(data, null, 2));
 	db.index('pluto', 'calendar', data, function (err, res) {
-		console.log('insert', res)
+		debug('insert', res)
 	})	
 }
 module.exports = priceGenerator;
