@@ -1,4 +1,3 @@
-var cheerio = require('cheerio');
 var express = {
 	mergeExpress: mergeExpress,
 	prepareOutputExpress: prepareOutputExpress
@@ -21,8 +20,8 @@ function mergeExpress (res, cb) {
 		})
 	}
 	looper(_json.departure, 1);
-	if(_json.return)
-		looper(_json.return);
+	// if(_json.return)
+	// 	looper(_json.return);
 	cb();
 };
 module.exports = express;

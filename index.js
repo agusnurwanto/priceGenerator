@@ -10,10 +10,12 @@ var garuda = require('./garuda');
 var lion = require('./lion');
 var citilink = require('./citilink');
 var express = require('./express');
+var airasia = require('./airasia');
 var merge = {
 	garuda: garuda.mergeGaruda,
 	citilink: citilink.mergeCitilink,
 	lion: lion.mergeLion,
+	airasia: airasia.mergeAirasia,
 	xpress: express.mergeExpress,
 
 }
@@ -21,6 +23,7 @@ var prepareOutput = {
 	garuda: garuda.prepareOutputGaruda,
 	citilink: citilink.prepareOutputCitilink,
 	lion: lion.prepareOutputLion,
+	airasia: airasia.prepareOutputAirasia,
 	xpress: express.prepareOutputExpress,
 }
 var _next, _added;
@@ -38,7 +41,7 @@ function priceGenerator (airline) {
 	};
 };
 function getCache (cb) {
-	if ( ['xpress', 'airaasia'].indexOf(_airline) > -1 )
+	if ( ['xpress', 'airasia'].indexOf(_airline) > -1 )
 		return cb();
 	var ori = _dt.ori.toUpperCase();
 	var dst = _dt.dst.toUpperCase();
