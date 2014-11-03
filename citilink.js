@@ -9,7 +9,7 @@ function prepareOutputCitilink (data) {
 	data.aggregations.groupFlight.buckets.forEach(function (flight) {
 		var classList = {};
 		flight.groupClass.buckets.forEach(function (seat) {
-			classList[seat.key] = seat.minPrice.value;
+			classList[seat.key] = Math.round(seat.minPrice.value / 10) * 10;
 		});
 		flightList[flight.key] = classList;
 	});

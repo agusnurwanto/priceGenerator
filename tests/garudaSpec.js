@@ -5,7 +5,7 @@ describe('Price Generator for Garuda', function () {
 	this.timeout(10000)
 	it('should get cache from db, and merge with json flight', function (next) {
 		var priceGenerator = require('../index')('garuda')		
-		priceGenerator({ori:'JOG', dst:'CGK'}, mockDataGaruda, function (res) {
+		priceGenerator({ori:'cgk', dst:'sub'}, mockDataGaruda, function (res) {
 			// console.log(JSON.stringify(res, null, 2));
 			next();
 		});
