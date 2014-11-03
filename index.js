@@ -103,8 +103,17 @@ function insertLowestPrice (price) {
 	};
 	data.id = data.origin + data.destination + data.date / 1000;
 	// debug('lowest',lowestPrice, JSON.stringify(data, null, 2));
-	db.index('pluto', 'calendar', data, function (err, res) {
-		debug('insert', res)
-	})	
+	db.get(data.id, function (res) {
+		var res = JSON.parse(res);
+		var oldPrice = 0;
+		if (res.found)
+			oldPrice = res._source && res._source.price || 0;
+		if ( oldPrice !== 0 && _price > oldPrice )
+			return false;
+		data.price = _price;
+		db.index('pluto', 'calendar', data, function (err, res) {
+			debug('found lower price, inserting to calendar...', res)
+		})	
+	})
 }
 module.exports = priceGenerator;
