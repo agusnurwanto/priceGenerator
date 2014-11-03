@@ -109,6 +109,7 @@ function insertLowestPrice (price) {
 		// debug(res)
 		var res = JSON.parse(res);
 		var oldPrice = res._source && res._source.price || 0;
+		debug(oldPrice, _price)
 		if ( oldPrice - _kode === _price || (oldPrice !== 0 && _price >= oldPrice && res._source.airline !== _airline))
 			return false;
 		data.price = _price;
