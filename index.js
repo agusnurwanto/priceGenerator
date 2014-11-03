@@ -103,11 +103,15 @@ function insertLowestPrice (price) {
 	};
 	data.id = data.origin + data.destination + data.date / 1000;
 	// debug('lowest',lowestPrice, JSON.stringify(data, null, 2));
-	db.get(data.id, function (res) {
+	db.get(data.id, function (err, res) {
+		// debug(res)
 		var res = JSON.parse(res);
 		var oldPrice = 0;
-		if (res.found)
+		if (res.found) {
+			if (res._source.airline !== _airline)
+				return false;
 			oldPrice = res._source && res._source.price || 0;
+		}
 		if ( oldPrice !== 0 && _price > oldPrice )
 			return false;
 		data.price = _price;
