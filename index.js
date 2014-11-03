@@ -6,6 +6,7 @@ var db = new ElasticSearchClient({
     host: 'folbek.me',
     port: 9200
 });
+var _debug = 1;
 var debug = function () {
 	if (_debug)
 		console.log.apply(null, arguments)
