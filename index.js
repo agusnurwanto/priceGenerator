@@ -51,7 +51,7 @@ function getCache (cb) {
 	var ori = _dt.ori.toUpperCase();
 	var dst = _dt.dst.toUpperCase();
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
-	debug(JSON.stringify(query, null, 2));
+	// debug(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
 		// debug('res',res, _dt.ori, _dt.dst);
 		cb(prepareOutput[_airline](JSON.parse(res)).data);

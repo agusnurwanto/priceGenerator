@@ -12,7 +12,6 @@ function prepareOutputGaruda (data) {
 		});
 		flightList[flight.key] = classList;
 	});
-	// console.log(flightList);
 	return {data: flightList};
 }
 function mergeGaruda (res, cb) {
@@ -28,8 +27,9 @@ function mergeGaruda (res, cb) {
 		var out = depFlights.map(function (depFlight) {
 			return depFlight.map(function (flight) {
 				return flight.seats.map(function (seat) {
-					seat.price = _res[seat.class];
-					if(save && seat.available && (!lowestPrice || seat.price < lowestPrice))
+					seat.price = _res[seat.class.toUpperCase()];
+					console.log(save, seat.available, seat.price, lowestPrice);
+					if(!!save && !!seat.available && (!lowestPrice  || (seat.price && seat.price < lowestPrice)))
 						lowestPrice = seat.price;
 					return seat
 				});
