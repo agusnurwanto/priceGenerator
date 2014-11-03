@@ -12,9 +12,9 @@ function mergeExpress (res, cb) {
 			if(price === "Full")
 				return false;
 			var priceAvailable = price.split(' ').map(function (arg) {
-				var num = parseInt(arg.replace(/\D/g, ''), 10);
-				if(!isNaN(num))
-					return num
+				return parseInt(arg.replace(/\D/g, ''), 10);
+			}).filter(function (arg) {
+				return parseInt(arg, 10) === arg;
 			});
 			if(!!save && !!priceAvailable[1] && (!lowestPrice || (priceAvailable[0] && priceAvailable[0] < lowestPrice)))
 				lowestPrice = priceAvailable[0];
