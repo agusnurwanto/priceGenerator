@@ -12,6 +12,7 @@ function prepareOutputGaruda (data) {
 		});
 		flightList[flight.key] = classList;
 	});
+	console.log(flightList);
 	return {data: flightList};
 }
 function mergeGaruda (res, cb) {
@@ -21,12 +22,14 @@ function mergeGaruda (res, cb) {
 			_res[_prop.toUpperCase()] = Math.round(res[prop][_prop]/100) * 100;
 		}
 	}
+	console.log(_res)
 	var depFlights = _json.departure.flights;
 	var retFlights = _json.return && json.return.flights;
 	function looper (depFlights, save) {
 		var out = depFlights.map(function (depFlight) {
 			return depFlight.map(function (flight) {
 				return flight.seats.map(function (seat) {
+					console.log(seat.class)
 					seat.price = _res[seat.class.toUpperCase()];
 					console.log(save, seat.available, seat.price, lowestPrice);
 					if(!!save && !!seat.available && (!lowestPrice  || (seat.price && seat.price < lowestPrice)))
