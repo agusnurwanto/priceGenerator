@@ -8,6 +8,7 @@ describe('Price Generator for Express', function () {
 		var priceGenerator = require('../index')('xpress');
 		// console.log(mockDataExpress);
 		priceGenerator({ori:'PNK', dst:'JOG'}, mockDataExpress, function (res) {
+			// console.log(res);
 			// console.log(JSON.stringify(res, null, 2));
 			// fs.writeFileSync('./ct2.html', res);
 			next();

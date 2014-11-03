@@ -6,6 +6,10 @@ var db = new ElasticSearchClient({
     host: 'folbek.me',
     port: 9200
 });
+var debug = function () {
+	if (_debug)
+		console.log.apply(null, arguments)
+}
 var garuda = require('./garuda');
 var lion = require('./lion');
 var citilink = require('./citilink');
@@ -46,7 +50,7 @@ function getCache (cb) {
 	var ori = _dt.ori.toUpperCase();
 	var dst = _dt.dst.toUpperCase();
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
-	// console.log(JSON.stringify(query, null, 2));
+	console.log(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
 		// console.log('res',res, _dt.ori, _dt.dst);
 		cb(prepareOutput[_airline](JSON.parse(res)).data);
