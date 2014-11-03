@@ -108,13 +108,8 @@ function insertLowestPrice (price) {
 	db.get(data.id, function (err, res) {
 		// debug(res)
 		var res = JSON.parse(res);
-		var oldPrice = 0;
-		if (res.found) {
-			if (res._source.airline !== _airline)
-				return false;
-			oldPrice = res._source && res._source.price || 0;
-		}
-		if ( oldPrice !== 0 && _price > oldPrice )
+		var oldPrice = res._source && res._source.price || 0;
+		if ( oldPrice !== 0 && _price > oldPrice && res._source.airline !== _airline)
 			return false;
 		data.price = _price;
 		db.index('pluto', 'calendar', data, function (err, res) {
