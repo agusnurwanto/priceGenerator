@@ -16,7 +16,7 @@ function mergeExpress (res, cb) {
 			});
 			if(!!save && !!priceAvailable[1] && (!lowestPrice || (priceAvailable[0] && priceAvailable[0] < lowestPrice)))
 				lowestPrice = priceAvailable[0];
-			// console.log(lowestPrice, priceAvailable);
+			console.log(lowestPrice, priceAvailable);
 		})
 	}
 	looper(_json.departure, 1);
