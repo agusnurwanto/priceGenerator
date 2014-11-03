@@ -28,14 +28,15 @@ function mergeGaruda (res, cb) {
 	function looper (depFlights, save) {
 		var out = depFlights.map(function (depFlight) {
 			return depFlight.map(function (flight) {
-				return flight.seats.map(function (seat) {
+				flight.seats = flight.seats.map(function (seat) {
 					console.log(seat.class)
 					seat.price = _res[seat.class.toUpperCase()];
 					console.log(save, seat.available, seat.price, lowestPrice);
 					if(!!save && !!seat.available && (!lowestPrice  || (seat.price && seat.price < lowestPrice)))
 						lowestPrice = seat.price;
-					return seat
+					return seat;
 				});
+				return flight;
 			});
 		});
 		return out;
