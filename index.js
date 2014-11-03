@@ -31,13 +31,18 @@ var prepareOutput = {
 	airasia: airasia.prepareOutputAirasia,
 	xpress: express.prepareOutputExpress,
 }
-var _next, _added;
+var _next, _added, _prices = [];
 function priceGenerator (airline) {
 	_kode = airlines[airline] || 0;
 	_airline = airline;
 	return function (dt, json, cb) {
 		this._dt = dt;
-		this._realDt = dt;
+		// debug(dt);
+		var _realDt = {};
+		for (var prop in dt){
+			_realDt[prop] = dt[prop];
+		}
+		this._realDt = _realDt;
 		this._json = json;
 		getCache(function (res) {
 			// debug(res);
@@ -77,23 +82,28 @@ function mergePrice(res, cb) {
 			_added = _this._added || [];
 
 			// debug(res);
-			debug('lowestPrice',lowestPrice);
+			// debug('lowestPrice',lowestPrice);
 			var fn;
-			if (lowestPrice)
+			if (lowestPrice){
 				insertLowestPrice(lowestPrice);
+				_prices.push(lowestPrice);
+			}
 		 	if (fn = _next.pop()){
 		 		// debug('next');
 		 		_json = res;
 		 		fn(_cb)
-		 	}
-		 	else{
+		 	} else {
 		 		// debug(res);
 				_cb(res);
+				if(_prices.length > 1 && _prices.length + 1 === _added.length)
+					insertLowestPrice(_prices.reduce(function (num, before) {
+						return num + before;
+					}, 0), 1)
 		 	}
 		});
 	}
 }
-function insertLowestPrice (price) {
+function insertLowestPrice (price, real) {
 	var _price = parseInt(price, 10) + _kode;
 	var _date = moment(_dt.dep_date, dateFormats).unix() * 1000;
 	var data = {
@@ -103,19 +113,27 @@ function insertLowestPrice (price) {
 		price: _price,
 		airline: _airline
 	};
+	if (real) {
+		var _real = _added.shift();
+		data.origin = _real.substr(0,3);
+		data.destination = _real.substr(3,3);
+		// debug('real', data)
+	}
 	data.id = data.origin + data.destination + data.date / 1000;
 	debug('lowest',lowestPrice, JSON.stringify(data, null, 2));
 	db.get('pluto', 'calendar', data.id, function (err, res) {
-		debug(res)
+		// debug(res)
 		var res = JSON.parse(res);
 		var oldPrice = (res._source && res._source.price) || 0;
-		debug(oldPrice, _price)
-		if ( oldPrice === _price || (oldPrice !== 0 && _price >= oldPrice && res._source.airline !== _airline))
+		// debug(oldPrice, _price)
+		if ( oldPrice === _price || (oldPrice !== 0 && _price >= oldPrice && res._source.airline !== _airline)) {
 			return false;
-		data.price = _price;
-		db.index('pluto', 'calendar', data, function (err, res) {
-			debug('found lower price, inserting to calendar...', res)
-		})	
+		} else {
+			data.price = _price;
+			db.index('pluto', 'calendar', data, function (err, res) {
+				debug('found lower price, inserting to calendar...', res)
+			})	
+		}
 	})
 }
 module.exports = priceGenerator;
