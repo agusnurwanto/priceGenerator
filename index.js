@@ -48,8 +48,13 @@ function priceGenerator (airline) {
 function getCache (cb) {
 	if ( ['xpress', 'airasia'].indexOf(_airline) > -1 )
 		return cb();
-	var ori = _dt.ori.toUpperCase();
-	var dst = _dt.dst.toUpperCase();
+	if ( ['garuda'].indexOf(_airline) > -1) {
+		var ori = _dt.ori.toLowerCase();
+		var dst = _dt.dst.toLowerCase();		
+	} else {
+		var ori = _dt.ori.toUpperCase();
+		var dst = _dt.dst.toUpperCase();
+	}
 	var query = {"size":0, "query": {"filtered": {"filter": {"and" : [{ "term": { "origin": ori } }, { "term": { "destination": dst} }, { "term": { "airline": _airline} } ] } } }, "aggs": {"groupFlight": {"terms": {"field": "flight", }, "aggs": {"groupClass": {"terms": {"field": "class", }, "aggs": {"minPrice": {"min": {"field":"price"} } } } } } } };
 	debug(JSON.stringify(query, null, 2));
 	db.search('pluto', 'price', query, function (err, res) {
